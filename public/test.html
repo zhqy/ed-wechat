@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <meta content="telephone=no" name="format-detection"/>
+    <title>建筑管理</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/global.css">
+    <script src="js/zepto.min.js"></script>
+</head>
+<body>
+<!-- content begin -->
+<section class="column">
+	<!-- 删除 begin-->
+	<div class="user_custom">
+	    <li>
+		    <a href="javascript:" class="user_custom_select js_deleteBtn">
+		    	<b class="on"></b>删除
+		    </a>
+	    </li>
+	    <li>
+		    <a href="javascript:" class="deleteBtn">完成</a>
+	    </li>
+	</div>
+	<!-- 删除 end-->
+
+	<!-- content begin -->
+	<div class="content" id="cur_list">
+		<ul>
+			<li id="li_1">
+				<div class="pack">
+					<div class="con">
+						<a class="cover" href="#" style="background-image:url(temp/pic01.jpg);"></a>
+						<i class="cover_bg"></i>
+						<em class="cover_btn cover_delete_btn"></em>
+					</div>
+					<div class="tit">
+						<h3><a href="#">我是名字位置11</a></h3>
+					</div>
+				</div>
+			</li>
+			<li id="li_2">
+				<div class="pack">
+					<div class="con">
+						<a class="cover" href="#" style="background-image:url(temp/pic01.jpg);"></a>
+						<i class="cover_bg"></i>
+						<em class="cover_btn cover_delete_btn"></em>
+					</div>
+					<div class="tit">
+						<h3><a href="#">我是名字位置22</a></h3>
+					</div>
+				</div>
+			</li>
+			<li id="li_3">
+				<div class="pack">
+					<div class="con">
+						<a class="cover" href="#" style="background-image:url(temp/pic01.jpg);"></a>
+						<i class="cover_bg"></i>
+						<em class="cover_btn cover_delete_btn"></em>
+					</div>
+					<div class="tit">
+						<h3><a href="#">我是名字位置33</a></h3>
+					</div>
+				</div>
+			</li>
+			<li id="li_4">
+				<div class="pack">
+					<div class="con">
+						<a class="cover" href="#" style="background-image:url(temp/pic01.jpg);"></a>
+						<i class="cover_bg"></i>
+						<em class="cover_btn cover_delete_btn"></em>
+					</div>
+					<div class="tit">
+						<h3><a href="#">我是名字位置44</a></h3>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+    
+    <div class="graphictext" style="clear:both">
+		<h2 class="warn-items-title" style="font-size: 16px;margin-left: 10px;margin-top: 15px;">
+			点击下列添加更多建筑
+		</h2>
+	</div>
+    
+    	<div class="content" id="add_list" style="clear:both">
+		<ul>
+			<li id="li_5">
+				<div class="pack">
+					<div class="con">
+						<a class="cover" href="#" style="background-image:url(temp/pic01.jpg);"></a>
+						<i class="cover_bg"></i>
+						<em class="cover_btn cover_delete_btn"></em>
+					</div>
+					<div class="tit">
+						<h3><a href="#">我是名字位置55</a></h3>
+					</div>
+				</div>
+			</li>
+			<li id="li_6">
+				<div class="pack">
+					<div class="con">
+						<a class="cover" href="#" style="background-image:url(temp/pic01.jpg);"></a>
+						<i class="cover_bg"></i>
+						<em class="cover_btn cover_delete_btn"></em>
+					</div>
+					<div class="tit">
+						<h3><a href="#">我是名字位置66</a></h3>
+					</div>
+				</div>
+			</li>
+			<li id="li_7">
+				<div class="pack">
+					<div class="con">
+						<a class="cover" href="#" style="background-image:url(temp/pic01.jpg);"></a>
+						<i class="cover_bg"></i>
+						<em class="cover_btn cover_delete_btn"></em>
+					</div>
+					<div class="tit">
+						<h3><a href="#">我是名字位置77</a></h3>
+					</div>
+				</div>
+			</li>
+			<li id="li_8">
+				<div class="pack">
+					<div class="con">
+						<a class="cover" href="#" style="background-image:url(temp/pic01.jpg);"></a>
+						<i class="cover_bg"></i>
+						<em class="cover_btn cover_delete_btn"></em>
+					</div>
+					<div class="tit">
+						<h3><a href="#">我是名字位置88</a></h3>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<!-- content end -->
+</section>
+<!-- content end -->
+
+<!-- footer begin -->
+<div class="bottom-fxied">
+	<footer>
+		<ul>
+			<li><span></span></li>
+			<li>用户信息</li>
+			<li>管理建筑</li>
+			<li>异常提醒<em id="my_active_em" class="tip"></em></li>
+		</ul>
+	</footer>
+</div>
+<!-- footer end -->
+
+<!-- 提示弹窗 -->
+<div class="popbg"></div>
+<div class="popBox" value="">
+    <h2>你确定要删除此建筑吗？</h2>
+    <a class="confirm" href="javascript:">确定</a><a class="cancel" href="javascript:">取消</a>
+</div>
+
+<div id="success_alert" style="display : none">
+    <div id="alert_content">
+        <span id="alert_message">操作成功</span>
+    </div>
+</div>
+<div id="fails_alert" style="display : none">
+    <div id="alert_content">
+        <span id="alert_message">操作失败</span>
+    </div>
+</div>
+
+<script type="text/javascript">
+//modify by 2yuri.
+
+$(function() {
+	$(".js_deleteBtn").click(function() {
+		$("#cur_list .cover_bg,#cur_list .cover_delete_btn").show();
+        //+号处理
+        $('#cur_list .cover_add_btn').removeClass('cover_add_btn').addClass('cover_delete_btn').show();
+	})
+	$(".content li").click(function() {
+		var str = $(this).attr('id').split("_")[1];
+		$('.popbg,.popBox').val(str);
+		// block or inline.
+		var cover = $(this).find(".cover_btn").css("display");
+        var isAdd = $(this).find('.cover_btn').hasClass('cover_add_btn');
+        // can't use !isAdd ????????  what a big bug! note by 2yuri
+        // ????
+		if ((cover == 'inline' || cover == 'block')) {
+            if(isAdd == false){
+                // when showdilog + appear?? why
+			showDilog();
+            }
+		}
+	})
+    //确定删除
+	$(".confirm").click(function() {
+		del();
+	})
+	$(".cancel,.popbg").click(function() {
+		cancel();
+	})
+    //完成
+	$(".deleteBtn").click(function(){
+		// finish.
+		$(".pack .cover_bg,.cover_delete_btn,.cover_add_btn").hide();
+
+		var cur_list = $("#cur_list li");
+		var cur_buildings = [];
+		if (cur_list) {
+			$.each(cur_list,function(key,cur){
+				cur_buildings.push($(cur).attr('id').split("_")[1]);
+			})
+		};
+		var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+		var wxid = hashes[0].split('=')[1];
+		var xtid = hashes[1].split('=')[1];
+        if(xtid[xtid.length - 1] == '#'){
+            xtid = xtid.slice(0,xtid.length - 1);
+        }
+		console.log(cur_buildings);
+		var data = {
+			currentBuildings : cur_buildings,
+			wxid : wxid,
+			xtid : xtid
+		}
+		$.ajax('/api/managebuildings',{
+			data : {data : JSON.stringify(data)},
+			dataType : 'json',
+			cache : false,
+			method : 'POST',
+			success : function(ret){
+				if (ret && ret.error == 0) {
+					render('success');
+				}else{
+					render('fails');
+				}
+			},
+			error : function(){
+				render('fails');
+			}
+		})
+	})
+    
+    //添加
+	$("#add_list li").click(function(){
+        //判断是否是待添加的建筑
+        if($(this).parent().parent().attr('id') == 'add_list'){
+            $("#cur_list ul").append(this);
+            //加特效
+            $(this).find('.cover_btn').removeClass('cover_delete_btn').addClass('cover_add_btn').show();
+            $(this).find('.cover_bg').show();
+            
+            if ($("#add_list li").length == 0) {
+                $('.graphictext').hide();
+            };
+        }
+	})
+})
+
+function render(msg){
+	var name = '#' + msg + '_alert';
+	$(name).show();
+	setTimeout(function(){
+		$(name).hide();
+	},2000);
+}
+
+function showDilog() {
+    $('.popbg,.popBox').show();
+}
+
+function del() {
+    var strVal = $('.popbg,.popBox').val();
+    var cur_item = $("#li_" + strVal);
+    cur_item.find(".cover_bg,.cover_delete_btn").hide();
+    
+    //减 +号
+    cur_item.find('.cover_add_btn').hide();
+    
+    $('#add_list ul').append($("#li_" + strVal));
+    $('.popbg,.popBox').hide();
+    
+    //是否显示文字
+    if ($('#add_list li').length > 0) {
+    	$('.graphictext').show();
+    }
+    //add list click event bind again.
+    // $("#add_list li").click(function(){
+	// 	$("#cur_list ul").append(this);
+        
+    //     //加特效
+    //     $(this).find('.cover_btn').removeClass('cover_delete_btn').addClass('cover_add_btn').show();
+    //     $(this).find('.cover_bg').show();
+	// 	if ($("#add_list li").length == 0) {
+	// 		$('.graphictext').hide();
+	// 	};
+	// });
+}
+
+function cancel() {
+    $('.popbg,.popBox').hide();
+}
+</script>
+<body>
+</html>

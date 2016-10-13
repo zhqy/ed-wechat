@@ -1,0 +1,15 @@
+<div class="bottom-fxied">
+	<footer>
+		<ul>
+			<li><a href="/web/index?wxid=<%= wxid %>&xtid=<%= xtid %>"><span></span></a></li>
+			<li><a href="/web/index/user_profile?wxid=<%= wxid %>&xtid=<%= xtid %>">用户信息</a></li>
+			<li><a href="/web/index/building_manage?wxid=<%= wxid %>&xtid=<%= xtid %>">管理建筑</a></li>
+			<li>
+				<a href="/web/index/warnings?wxid=<%= wxid %>&xtid=<%= xtid %>">异常提醒</a>
+				<% if(typeof alarm != 'undefined' && alarm == true){ %>
+				<em id="my_active_em" class="tip"></em>
+				<% } %>
+			</li>
+		</ul>
+	</footer>
+</div>

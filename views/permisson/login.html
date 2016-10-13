@@ -1,0 +1,39 @@
+<section class="m-component-login">
+    <a href="#" class="logo"></a>
+    <form class="listForm" id="loginForm" action="/web/login" method="post">
+        <div class="inputcontent">
+            <input type="hidden" name="openid" id="openid" placeholder="" value= "<%= openid %>"/>
+            <% if(typeof nickname != 'undefined'){%>
+                <input type="hidden" name="nickname" id="nickname" placeholder="" value= "<%= nickname %>"/>                
+            <%}%>
+            <p>
+                <i class="login-name"></i>
+                <input type="text" name="username" id="name" placeholder="请输入账号" />
+                <a href="javascript:void(0);" class="quxiao" style="display: none"></a>
+            </p>
+            <p>
+                <i class="login-password"></i>
+                <input type="password" name="password" id="pass" placeholder="请输入密码" />
+                <a href="javascript:void(0);" class="quxiao" style="display: none"></a>
+            </p>
+        </div>
+        <div class="col_div">
+            <input href="javascript:void(0);" id="btnlogin" class="btn" title="会员登录" value="登 陆" type="submit" style="border: none;"></input>
+        </div>
+    </form>
+</section>
+
+<% if(typeof error != 'undefined'){ %>
+<div id="alert_bg">
+    <div id="alert_content">
+        <span id="alert_message"><%= error %></span>
+    </div>
+</div>
+<script>
+    $(function(){
+        setTimeout(function(){
+            $('#alert_bg').hide();
+        },2000)
+    })
+</script>
+<% } %>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <meta content="telephone=no" name="format-detection"/>
+    <!-- 标题 -->
+    <title><%= title %></title>
+
+    <!-- 全局样式 -->
+    <link rel="stylesheet" href="/public/css/base.css">
+    <link rel="stylesheet" href="/public/css/global.css">
+
+    <!-- 页面样式 -->
+    <% if(typeof css != 'undefined'){ %>
+    <%- render_css(css) %>
+    <% } %>
+    <script src="/public/js/jquery-1.10.1.min.js"></script>
+</head>
+<body>
+
+<!-- 内容主体 -->
+<%- body %>
+    <!-- 页面脚本 -->
+    <% if(typeof scripts != 'undefined'){ %>
+    <%- render_script(scripts) %>
+    <% } %>
+<body>
+</html>

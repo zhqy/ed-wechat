@@ -1,0 +1,504 @@
+<section class="group-items warn-items">
+    <% wd.forEach(function(wi){%>
+    <div>
+        <div class="text-item">
+            <a href="#" data-flag="0" data-iid="<%= wi.iid %>" data-time="<%= wi.datetime %>" data-type="<%= wi.type %>">
+                <div class="text-title">
+                    <h2><i class="alert-icon alert-icon-<%= wi.rank %>"></i><%= wi.typename %><em><%= wi.value %></em></h2>
+                </div>
+                <p>
+                    <span>地址:<%= wi.address %><em>楼层<%= wi.floor %></em></span>
+                    <span class="time"><%= formatTime(wi.datetime).d %><em><%= formatTime(wi.datetime).t %></em></span>
+                </p>
+            </a>
+        </div>
+        <div class="graphic" style="display:none">
+            <div class="graphictext">
+                <h2><%= wi.imetername %><span><%= formatTime(wi.datetime).w + ' ' + formatTime(wi.datetime).ds%></span></h2>
+                <a class="btn btn_off" href="/web/loopcontrol?sid=<%= wi._cfg ? wi._cfg.sid : '' %>&irtu=<%= wi._cfg ? wi._cfg.irtu : '' %>&_ctrlno=<%= wi._cfg ? wi._cfg.cno : ''%>&wxid=<%=wxid%>&xtid=<%=xtid%>&sbid=<%= wi.switchbox %>" style="<%= control && wi._status == 1 ? '': 'color:gray;border:1px solid;background:#F0F1F5'%>" data-status="<%= wi._status %>">
+        					<%= wi._statusDescription %>
+        				</a>                
+<a class="btn btn_on" href="javascript:void(0);" style="display:none">已断开</a>
+                <!--<a class="btn btn_off" href="javascript:void(0);">断开线路</a>
+                <a class="btn btn_on" href="javascript:void(0);" style="display:none">已断开</a>-->
+            </div>
+        </div>
+        <div class="chartcontainer" style="display:none">
+            <div class="chart-wrapper dy">
+                <div class="chart-title">
+                    <h2>电压有效值</h2>
+                    <div class="chartinfo">
+                        <span><em class="chartA">A</em> </span>
+                        <span><em class="chartB">B</em> </span>
+                        <span><em class="chartC">C</em> </span>
+                    </div>
+                </div>
+                <div class="chart-main"><canvas id="canvas01"></canvas></div>
+            </div>
+            <div class="chart-wrapper dl">
+                <div class="chart-title">
+                    <h2>电流有效值</h2>
+                    <div class="chartinfo">
+                        <span><em class="chartA">A</em> </span>
+                        <span><em class="chartB">B</em> </span>
+                        <span><em class="chartC">C</em> </span>
+                    </div>
+                </div>
+                <div class="chart-main"><canvas id="canvas02"></canvas></div>
+            </div>
+            <div class="chart-wrapper yygl">
+                <div class="chart-title">
+                    <h2>有功功率</h2>
+                    <div class="chartinfo">
+                        <span> </span>
+                    </div>
+                </div>
+                <div class="chart-main"><canvas id="canvas03"></canvas></div>
+            </div>
+            <div class="chart-wrapper glys">
+                <div class="chart-title">
+                    <h2>功率因数</h2>
+                    <div class="chartinfo">
+                        <span><em class="chartA">A</em> </span>
+                        <span><em class="chartB">B</em> </span>
+                        <span><em class="chartC">C</em> </span>
+                    </div>
+                </div>
+                <div class="chart-main"><canvas id="canvas04"></canvas></div>
+            </div>
+            <div class="chart-wrapper sydl">
+                <div class="chart-title">
+                    <h2>剩余电流</h2>
+                    <div class="chartinfo">
+                        <span></span>
+                    </div>
+                </div>
+                <div class="chart-main"><canvas id="canvas06"></canvas></div>
+            </div>
+        </div>
+    </div> 
+    <%})%>
+    
+</section>
+<div id="fails_alert" style="display : none">
+    <div id="alert_content">
+        <span id="alert_message">无权限操作</span>
+    </div>
+</div>
+<div id="nocontrol_alert" style="display : none">
+    <div id="alert_content">
+        <span id="alert_message">未配置控制功能</span>
+    </div>
+</div>
+<%-partial('footer')%>
+<script type="text/javascript">
+
+    // by 2yuri 11.25
+    //
+    //
+	var control = <%= control %>;
+	$(function(){
+        //
+        var alarmTrans = function(type){
+          var chart = '';
+          switch(type){
+				case '2':{
+                    chart = '.sydl';
+					break;
+				}
+				case '8':{
+                    chart = '.dl';
+					break;
+				}
+				case '0':{
+                    chart ='.dl';
+					break;
+				}
+				case '6':{
+                    chart = '.glys';
+					break;
+				}
+				case '1':
+				case '4':
+				case '5':{
+                    chart = '.dy';
+					break;
+				}
+				case '7':{
+					break;
+				}
+				default:{}
+			}
+          return chart;  
+        };
+        
+        //点击事件
+        $('.text-item > a').click(function(){
+            var flag = $(this).attr('data-flag');
+            var iid = $(this).attr('data-iid');
+            var datetime = $(this).attr('data-time');
+            var alarm_type = $(this).attr('data-type');
+            
+            if(flag == '1'){
+                $(this).attr('data-flag',"0");                
+                $(this).parent().siblings().hide();
+                $(this).parent().parent().siblings().fadeIn();
+                return;
+            }
+            
+            $(this).attr('data-flag',"1");
+            $(this).parent().parent().siblings().hide();
+            //置顶
+            var topChart = alarmTrans(alarm_type);
+            if(topChart){
+                var c = $(this).parent().parent().find(topChart);
+                var cc = c.parent();
+                c.prependTo(cc); 
+            }
+            //置顶
+            $(this).parent().siblings().fadeIn();
+            
+            //获取曲线数据
+            var params = {
+                iid : iid,
+                datetime : datetime
+            };
+            console.log(params);
+            var that = this;
+            $.ajax('/api/getimeterdatalogs', {
+                data: params,
+                dataType: 'json',
+                cache: false,
+                success: function (data) {
+                    // 记录hotlog位置
+                    var mp; //maker
+                    var hl; //hotlog
+                    
+                    function checkTime(i)
+                    {
+                        if (i<10) 
+                        {i="0" + i}
+                        return i
+                    };
+                    
+                    if(data.state && data.data.length > 0){
+                        // 数值数组
+                        var times = []; // 时间节点
+                        var dy = [], dl = [], glys = [], yggl = [], sydl = []; // 五个图表
+                        var dya = [], dyb = [], dyc = [];
+                        var dla = [], dlb = [], dlc = [];
+                        var glysa = [], glysb = [], glysc = [];
+                        
+                        var logs = data.data;
+                        var type; // 记录类型
+                        // 取出告警当前数值
+                        var hotlog;
+                        for(var j = 0; j < logs.length; j++){
+                            if(logs[j].time == datetime){
+                                hotlog = logs[j];
+                                hl = j;
+                                type = hotlog.type;
+                                break;
+                            }
+                        }
+                        var rightLength = hl;
+                        var leftLength = logs.length - 1 - hl;
+                        var dockerData= function(l,t){
+                            if(l > 0){
+                                var s,e;
+                                if(t == 'r') {s = 0;e = hl};
+                                if(t == 'l') {s = hl + 1;e = logs.length};
+                                if(t == 'c') {s = hl; e= hl + 1};
+                                if(s != 'undefined'){
+                                    for(var n = s; n < e; n +=2){
+                                        var log = logs[n];
+                                        // 时间
+                                        console.log(log);
+                                        var time = new Date(log.time);
+                                        times.push(checkTime(time.getHours()) + ':' + checkTime(time.getMinutes()));
+                                        
+                                        if(log.type == '3'){
+                                            // 电压
+                                            dya.push(log.dy[0]);
+                                            dyb.push(log.dy[1]);
+                                            dyc.push(log.dy[2]);
+                                            
+                                            // 电流
+                                            dla.push(log.dl[0]);
+                                            dlb.push(log.dl[1]);
+                                            dlc.push(log.dl[2]);
+                                            
+                                            // 功率因素
+                                            glysa.push(log.glys[0]);
+                                            glysb.push(log.glys[1]);
+                                            glysc.push(log.glys[2]);
+                                        }else{
+                                            dy.push(log.dy[0]);
+                                            dl.push(log.dl[0]);
+                                            glys.push(log.glys[0]);
+                                        }
+                                        
+                                        // 有功功率、剩余电流
+                                        yggl.push((log.yggl[0] / 1000).toFixed(1));
+                                        sydl.push(log.sydl);
+                                    }
+                                }
+                            }
+                        }
+                        // 增加hotlog点 12.12
+                        // for(var n = 0; n < logs.length; n ++){
+                        //     var log = logs[n];
+                        //     // 时间
+                        //     console.log(log);
+                        //     var time = new Date(log.time);
+                        //     times.push(checkTime(time.getHours()) + ':' + checkTime(time.getMinutes()));
+                            
+                        //     type = log.type;
+                        //     if(log.type == '3'){
+                        //         // 电压
+                        //         dya.push(log.dy[0]);
+                        //         dyb.push(log.dy[1]);
+                        //         dyc.push(log.dy[2]);
+                                
+                        //         // 电流
+                        //         dla.push(log.dl[0]);
+                        //         dlb.push(log.dl[1]);
+                        //         dlc.push(log.dl[2]);
+                                
+                        //         // 功率因素
+                        //         glysa.push(log.glys[0]);
+                        //         glysb.push(log.glys[1]);
+                        //         glysc.push(log.glys[2]);
+                        //     }else{
+                        //         dy.push(log.dy[0]);
+                        //         dl.push(log.dl[0]);
+                        //         glys.push(log.glys[0]);
+                        //     }
+                            
+                        //     // 有功功率、剩余电流
+                        //     yggl.push((log.yggl[0] / 1000).toFixed(1));
+                        //     sydl.push(log.sydl);
+                        // }
+                        //装备数据
+                        dockerData(rightLength,'r');
+                        mp = times.length; //此时的长度等于MakerPoint位置
+                        dockerData(1,'c');
+                        dockerData(leftLength,'l');
+                        
+                        if(type == '3'){
+                            dy.push(dya,dyb,dyc);
+                            dl.push(dla,dlb,dlc);
+                            glys.push(glysa,glysb,glysc);
+                        }
+                        
+                        //显示图表
+                        var dycc = $(that).parent().parent().find('#canvas01');
+                        var dlcc = $(that).parent().parent().find('#canvas02');
+                        var glyscc = $(that).parent().parent().find('#canvas04');
+                        var ygglcc = $(that).parent().parent().find('#canvas03');
+                        var sydlcc = $(that).parent().parent().find('#canvas06');
+                        //三相不显示剩余电流
+                        if(type == '3'){
+                            $(sydlcc).parent().parent().hide();
+                        }                        
+                        var dycanvas = dycc[0].getContext("2d");
+                        var dlctx = dlcc[0].getContext("2d");
+                        var glysctx = glyscc[0].getContext("2d");
+                        var ygglctx = ygglcc[0].getContext("2d");
+                        var sydlsctx = sydlcc[0].getContext("2d");
+                        
+                        Paint(dycc,hotlog,dycanvas,type,dy,times,'dy',mp);
+                        Paint(dlcc,hotlog,dlctx,type,dl,times,'dl',mp);
+                        Paint(glyscc,hotlog,glysctx,type,glys,times,'glys',mp);
+                        PaintSingle(ygglcc,hotlog,ygglctx,yggl,times,'yggl',mp);
+                        
+                        //三相不绘制剩余电流
+                        if(type != '3'){
+                            PaintSingle(sydlcc,hotlog,sydlsctx,sydl,times,'sydl',mp);
+                        }
+                        
+                    }else{
+                        //无数据，或者错误
+                        //todo                        
+                    }
+                },
+                error : function(xhr,status,message){
+                    // todo
+                    console.log('error');
+                }
+    	    });
+        });
+        
+        
+        
+        //断开回路事件
+		//$('.btn_off').click(function(){
+		//	if (!control) {
+		//		$('#fails_alert').show();
+                //setTimeout(function(){
+                  //  $('#fails_alert').hide();
+                //},2000);
+		//		return false;
+		//	}
+		//})
+                //断开回路事件
+        $('.btn_off').click(function(){
+    			if (!control) {
+    				// no control permisson
+    				$('#fails_alert').show();
+                    setTimeout(function(){
+                        $('#fails_alert').hide();
+                    },2000);
+    				return false;
+    			}else{
+    				// check status
+    				var status = $(this).attr('data-status');
+    				if(status == '-1'){
+    					$('#nocontrol_alert').show();
+    	                setTimeout(function(){
+    	                    $('#nocontrol_alert').hide();
+    	                },2000);
+    				  return false;
+    				}
+    			}
+    		})  
+        //曲线配置
+        Chart.defaults.global.templateInterpolators = {
+            start: "[[",
+            end: "]]"
+        };
+        Chart.defaults.global.scaleLabel = "[[= value ]]";
+        Chart.defaults.global.tooltipTemplate = "[[if (label){]][[= label ]]: [[}]][[= value ]]";
+        Chart.defaults.global.multiTooltipTemplate = "[[= value ]]";
+        
+        var w = $(window).width();
+        var h = $(window).height();
+        $("canvas").width("100%").height("120px");
+        
+        //绘图函数
+        function Paint(c,l,canvas,type,sets,times,lx,makerIndex) {
+            // A:黄 B:绿 C:蓝
+            var yellow = "rgba(245,166,35,1)";
+            var green = "rgba(126,211,33,1)";
+            var blue = "rgba(255,0,0,1)";
+            var data;
+            if(type == '3'){
+                data = {
+                    labels : times,
+                    datasets : [{
+                        fillColor : "rgba(255,255,255,0)",
+                        strokeColor : yellow,
+                        pointColor : yellow,
+                        data : sets[0]                        
+                    },{
+                        fillColor : "rgba(255,255,255,0)",
+                        strokeColor : green,
+                        pointColor : green,
+                        data : sets[1] 
+                    },{
+                        fillColor : "rgba(255,255,255,0)",
+                        strokeColor : blue,
+                        pointColor : blue,
+                        data : sets[2] 
+                    }]
+                };
+            }else{
+                var color;
+                if(type == '0') color = yellow;
+                if(type == '1') color = green;
+                if(type == '2') color = blue;
+                
+                data = {
+                    labels : times,
+                    datasets : [{
+                        fillColor : "rgba(255,255,255,0)",
+                        strokeColor : color,
+                        pointColor : color,
+                        data : sets
+                    }]
+                }
+            }
+            
+            var chart = new Chart(canvas).Line(data, {
+                makerPoint : makerIndex,
+                pointDot: false,
+                scaleShowGridLines:false,
+                scaleShowLabels : false,
+                
+                datasetStrokeWidth : 1,
+                scaleLineColor : "rgba(0,0,0,0)",
+                //12.02增加
+                tooltipFontColor:"rgba(86,86,86,1)", // 字体颜色
+                tooltipFillColor: "rgba(0,0,0,0.2)", //背景颜色 
+                
+                //
+                showXLabels: 6
+                // tooltipTemplate:"[[if (label){]][[=label]] 电压有效值：[[}]][[= value ]]kwh"
+            });
+            //
+            // 显示值
+            var danwei, values;
+            if(lx == 'dy') {danwei = 'V'; values = l.dy;}
+            if(lx == 'dl') {danwei = 'A'; values = l.dl;}
+            if(lx == 'glys') {danwei = ''; values = l.glys;}
+            //$(dycc).parent().parent().find('.chartA').parent()[0].childNodes[1].data
+            if(type == '3'){
+                $(c).parent().parent().find('.chartA').parent()[0].childNodes[1].data = ':' + values[0] + ' ' + danwei;
+                $(c).parent().parent().find('.chartB').parent()[0].childNodes[1].data = ':' + values[1] + ' ' + danwei;
+                $(c).parent().parent().find('.chartC').parent()[0].childNodes[1].data = ':' + values[2] + ' ' + danwei;
+            }else{
+                var cc;
+                if(type == '0') cc = '.chartA';
+                if(type == '1') cc = '.chartB';
+                if(type == '2') cc = '.chartC';
+                
+                $(c).parent().parent().find(cc).parent().siblings().hide();
+                $(c).parent().parent().find(cc).parent()[0].childNodes[1].data = ':' + values[0] + ' ' + danwei;
+            }
+            
+        }
+        
+        function PaintSingle(c,l,canvas,sets,times,lx,makerIndex){
+            var color;
+            if(lx == 'yggl') color = "rgba(74,144,226,1)"; // 蓝色
+            if(lx == 'sydl') color = "rgba(255,0,0,1)"; //红色
+            // 默认黄色
+           var data = {
+                    labels : times,
+                    datasets : [{
+                        fillColor : "rgba(255,255,255,0)",
+                        strokeColor : color,
+                        pointColor : color,
+                        data : sets
+                    }]
+                };
+            var chart = new Chart(canvas).Line(data, {
+                makerPoint : makerIndex,
+                pointDot: false,
+                scaleShowGridLines:false,
+                scaleShowLabels : false,
+                
+                datasetStrokeWidth : 1,
+                scaleLineColor : "rgba(0,0,0,0)",
+                //12.02增加
+                tooltipFontColor:"rgba(86,86,86,1)", // 字体颜色
+                tooltipFillColor: "rgba(0,0,0,0.2)", //背景颜色 
+                // tooltipTemplate:"[[if (label){]][[=label]] 电压有效值：[[}]][[= value ]]kwh"
+            });
+            
+            // 显示值
+            var danwei, values;
+            if(lx == 'yggl') {danwei = 'kW'; values = l.yggl;}
+            if(lx == 'sydl') {danwei = 'mA'; values = l.sydl;}
+            $(c).parent().parent().find('span').text(lx == 'yggl'?((values[0] / 1000).toFixed(1) + ' ' + danwei ):(values + ' ' + danwei));
+
+            
+        };
+        
+        //
+        if (/Mobile/i.test(navigator.userAgent)) {//性能降级
+            Chart.defaults.global.animationSteps = Chart.defaults.global.animationSteps / 6
+            Chart.defaults.global.animationEasing = "linear"
+        }
+	})
+</script>

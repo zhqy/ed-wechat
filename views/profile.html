@@ -1,0 +1,68 @@
+<section>
+    <form id="loginForm" action="" method="post">
+        <div class="log_box clearfix">
+            <div class="log_item">
+                <div class="log_fl">登录账号 :</div>
+                <div class="log_ml90"><input name="username" id="username" value="<%= user.wechat.SystemUserId.Name%>" readonly="readonly"></div>
+            </div>
+            <% if(user.wechat.LoopControl.Permission){%>
+            <div class="log_item">
+                <a href="#">
+                    <div class="log_fl">操作密码 :</div>
+                    <div class="log_ml90" id="new_pw"><input name="password" type="password" id="pwd" value="<%= user.wechat.LoopControl.Password %>" readonly="readonly"></div>
+                </a>
+            </div>
+            <%}%>
+            <div class="log_item">
+                <div class="log_fl">企业信息 :</div>
+                <div class="log_ml90"><input name="password" type="text" id="pwd" value="<%= user.enterprise %>" placeholder="企业信息内容" readonly="readonly"></div>
+            </div>
+        </div>
+        <div class="col_div login_div">
+            <a href="javascript:void(0);" id="btnlogin" class="btn"><span class="c_login_font">退出登录</span></a>
+        </div>
+    </form>
+</section>
+
+<div id="ui-dialog_bg" style="display:none">
+    <div id="ui-dialog_content">
+        <p>您确认退出登录?</p>
+        <div id="dialog_btn">
+            <a href="javascript:void(0);" class="cancel">取消</a>
+            <a href="javascript:void(0);" class="dologout">确定</a>
+        </div>
+    </div>
+</div>
+<%-partial('footer')%>
+<script>
+    var wxid = "<%=wxid%>";
+    var xtid = "<%=xtid%>";
+    $(function(){
+        $('#btnlogin').click(function(){
+            $('#ui-dialog_bg').show();
+        });
+        $('.cancel').click(function(){
+            $('#ui-dialog_bg').hide();
+        });
+        $('.dologout').click(function(){
+            $.ajax('/api/logout',{
+                data : {wxid : wxid},
+                dataType : 'json',
+                success : function(ret){
+                    if (ret && ret.error == 0) {
+                        window.location.href = '/web/login?wxid=' + wxid;
+                    }else{
+                        alert('失败');
+                    }
+                },
+                error : function(){
+                    alert('失败');
+                }
+            });
+        });
+        // 注册修改密码事件
+        $('#new_pw').click(function(){
+            window.location.href = '/web/new_pw?wxid=' + wxid + '&xtid=' +  xtid;
+        });
+    })
+</script>

@@ -1,0 +1,198 @@
+/*
+ * send package
+ * By 2yuri.
+ */
+
+var socket = require('socket.io-client');
+
+module.exports = function(options){
+
+  var options = options || {};
+  var host = options.host;
+  var port = options.port;
+
+  if (!host || !port) {
+    console.log('config missing');
+    return;
+  };
+
+  var uri = 'http://' + host + ':' + port;
+
+  /**
+   * build header
+   * @param sid, isdc number
+   * @param post, postfix number
+   */
+
+  var BuildHeader = function(sid,post){
+    var buffer = new Buffer(7);
+    buffer[0] = 0xC1;
+    buffer[1] = 0x01;
+    //buffer[1] = 0x0B;
+    // buffer.writeUInt32BE(sid,2);
+    buffer[2] = sid[0];
+    buffer[3] = sid[1];
+    buffer[4] = sid[2];
+    buffer[5] = sid[3];
+    buffer[6] = post;
+    return buffer;
+  };
+
+  /**
+   * build payload
+   * @param cw control manner
+   * @param irtu number
+   * @param cno control number
+   * @param op operate manner
+   */
+
+  var BuildPayload = function(cw,irtu,cno,op){
+    var buffer = new Buffer(12);
+    buffer[0] = cw;
+    buffer[1] = 0x00;
+    buffer[2] = 0x00;
+    buffer[3] = 0x00;
+
+    // buffer.writeUInt32BE(irtu,4);
+    buffer[4] = irtu[0];
+    buffer[5] = irtu[1];
+    buffer[6] = irtu[2];
+    buffer[7] = irtu[3];
+
+    buffer[8] = cno;
+    buffer[9] = op;
+    buffer[10] = 0x00;
+    buffer[11] = 0x00;
+
+    return buffer;
+  };
+
+  /**
+   * cs check
+   */
+  var check = function(v1,v2){
+    var v = v1;
+    if (v2) {
+      var buf = new Buffer(1);
+      buf[0] = v2;
+      v = Buffer.concat([v1,buf],v1.length + 1);
+    };
+
+    var total = 0;
+    for(var i = 0; i < v.length; i++){
+      total += v[i];
+    }
+    return total & 0xFF;
+  };
+
+  /**
+   * parse uplink package
+   */
+  var ParsePackage = function(data,cb){
+    // TODO:校验
+    if(data){
+      // console.log(data);
+      // var flag = data.readUInt8(7);
+      // if (flag == 0xFF) {
+      //   return cb(null,{
+      //     state : false,
+      //     message : '命令不支持'
+      //   });
+      // }else if(flag == 0x00){
+      //   var rc = data.readUInt8(15);
+      //   return cb(null,{
+      //     state : true,
+      //     value : rc
+      //   });
+      // }else{
+      //   cb(null,{
+      //     state : false,
+      //     message : '包错误'
+      //   })
+      // }
+    }
+  };
+
+  /**
+   * sid to buffer;
+   */
+  var NoToBufffers = function(sid){
+    var tbuf = new Buffer(4);
+
+    tbuf[0] = sid & 0xFF;
+    sid = sid >> 8;
+    tbuf[1] = sid & 0xFF;
+    sid = sid >> 8;
+    tbuf[2] = sid & 0xFF;
+    sid = sid >> 8;
+    tbuf[3] = sid & 0xFF;
+
+    return tbuf;
+  }
+  /**
+   * request
+   */
+  var request = function(data,callback){
+    console.log('>>> in websocket request');
+    console.log(data);
+    if(data && data.sid){
+      var postfix = data.post || 0x00;
+      if(! data.payload) return;
+      var sid = NoToBufffers(parseInt(data.sid));
+      // console.log(sid);//bubug
+      var cw = data.payload.cw || 0x00;
+      var irtu = NoToBufffers(data.payload.irtu);
+      // console.log(irtu); //bude
+      var cno = data.payload.cno;
+      var op = data.payload.op;
+
+      var frame_head = BuildHeader(sid,postfix);
+      //var frame_load = BuildPayload(cw,irtu,cno,op);
+      var frame_head_cs = new Buffer(1);
+      var frame_loadlength = new Buffer(1);
+      frame_loadlength[0] = 0;
+      //frame_head_cs[0] = check(frame_head,frame_load.length);
+      frame_head_cs[0] = check(frame_head,0);
+
+      //var _temp = [frame_head,frame_loadlength,frame_head_cs,frame_load];
+      var _temp = [frame_head, frame_loadlength,frame_head_cs];
+      //var frame = Buffer.concat(_temp,23);
+      var frame = Buffer.concat(_temp,10);
+
+      //frame.writeUInt8(check(frame_load),frame.length - 2);
+      frame.writeUInt8(0x1A,frame.length - 1);
+
+      console.log(frame);//debug
+
+      var client = socket(uri);
+      client.on('connect',function(){
+        client.emit('getconnectisdc');
+        client.emit('breakimeter',data.sid,frame);
+      });
+      client.on('message',function(msg){
+        console.log(msg);
+      });
+      client.on('error',function(err){
+        console.log(err);
+      });
+      client.on('isdcs',function(ret){
+        console.log(ret);
+      });
+      client.on('breakpassresult',function(res){
+        console.log('>>>> breakpassresult event');
+        callback(null,res);
+        return client.disconnect();
+      })
+    }else{
+      return;
+    }
+  };
+
+  return {
+    request : request,
+    NoToBufffers : NoToBufffers
+  }
+
+
+}
+

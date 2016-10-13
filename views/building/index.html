@@ -1,0 +1,135 @@
+
+<section class="page-content">
+	<!-- 建筑基本信息 -->
+	<div class="responsiveBox" id="cur_building" data-id="<%= building._id %>">
+		<div class="pic"><img src="<%= (building['PictureURL'] && building['PictureURL'].length > 0 )? buildPicUrl(building['PictureURL'][0].Path) : '/public/temp/pic02.jpg' %>"></div>
+		<div class="txt">
+			<h2><%= building.Name %></h2>
+			<p>地址:<%= building.Address%> <br>开始监测时间:<%= building.StartMonitorDateTime %></p>
+		</div>
+	</div>
+	<!-- 用电安全信息 -->
+	<div class="container-fluid" id="alarm_list">
+		<div class="responsiveInfo">
+			<div class="item normal">
+				<a href="<%= building._id %>/warnings?type=0&wxid=<%= wxid %>&xtid=<%= xtid %>">
+					<h2 class="desc">过载监控</h2>
+					<div class="visual">
+						<span data-alarm-type="0">正常</span>
+		                <img src="/public/images/control-icon.png">
+		            </div>
+	            </a>
+			</div>
+			<div class="item normal">
+				<a href="<%= building._id %>/warnings?type=2&wxid=<%= wxid %>&xtid=<%= xtid %>">
+					<h2 class="desc">漏电监控</h2>
+					<div class="visual">
+						<span data-alarm-type="2">正常</span>
+		                <img src="/public/images/control-icon.png">
+		            </div>
+	            </a>
+			</div>
+			<div class="item normal">
+				<a href="<%= building._id %>/warnings?type=1-4-5&wxid=<%= wxid %>&xtid=<%= xtid %>">
+					<h2 class="desc">线损监控</h2>
+					<div class="visual">
+						<span data-alarm-type="1-4-5">正常</span>
+		                <img src="/public/images/control-icon.png">
+		            </div>
+		        </a>
+			</div>
+			<!-- 告警 -->
+			<div class="item normal">
+				<a href="<%= building._id %>/warnings?type=8&wxid=<%= wxid %>&xtid=<%= xtid %>">
+					<h2 class="desc">三相平衡</h2>
+					<div class="visual">
+						<span data-alarm-type="8">正常</span>
+		                <img src="/public/images/control-icon.png">
+		            </div>
+		        </a>
+			</div>
+			<!-- 异常 -->
+			<div class="item normal">
+				<a href="<%= building._id %>/warnings?type=6&wxid=<%= wxid %>&xtid=<%= xtid %>">
+					<h2 class="desc">用电效率</h2>
+					<div class="visual">
+						<span data-alarm-type="6">正常</span>
+		                <img src="/public/images/control-icon.png">
+		            </div>
+		        </a>
+			</div>
+			<div class="item normal">
+				<a href="<%= building._id %>/warnings?type=7&wxid=<%= wxid %>&xtid=<%= xtid %>">
+					<h2 class="desc">能耗预警</h2>
+					<div class="visual">
+						<span data-alarm-type="7">正常</span>
+		                <img src="/public/images/control-icon.png">
+		            </div>
+		        </a>
+			</div>
+		</div>
+		<!-- 功能模块 -->
+		<div class="row-fluid">
+			<li><a href="<%= building._id %>/energy_consumption?wxid=<%= wxid%>&xtid=<%= xtid %>"><i class="icon_rank"></i>能耗排行</a></li>
+			<li><a href="<%= building._id %>/history_consumption?wxid=<%= wxid%>&xtid=<%= xtid %>"><i class="icon_Historical"></i>历史耗能</a></li>
+			<li><a href="<%= building._id %>/switchbox?wxid=<%= wxid%>&xtid=<%= xtid %>"><i class="icon_loop"></i>回路控制</a></li>
+		</div>
+
+		<!-- 能耗趋势 -->
+		<div id="chart_line"><div id="container"></div></div>
+
+		<!-- 能耗环比 -->
+		<div class="Energy-chain">
+			<div class="Energy-title"><h2>能耗对比</h2></div>
+			<div class="Energy-chain-inner">
+				<div class="Energy-item">
+					<li>
+						<h2>上周用电</h2>
+						<span><em><%= lwe %></em>kWh</span>
+					</li>
+					<li>
+						<span class="<%= wcf >= 1 ? 'Energypercentup' : 'Energypercentdown'%>"><i class="icon_per"></i><%=parsecf( (wcf >= 1 ? Math.floor((wcf-1)*100) : Math.floor((1-wcf)*100))  + '%')%></span></li>
+					<li>
+						<h2>上月同期</h2>
+						<span><em><%= lwe_cf %></em>kWh</span>
+					</li>
+				</div>
+				<div class="Energy-item">
+					<li>
+						<h2>本月用电</h2>
+						<span><em><%= tme %></em>kWh</span>
+					</li>
+					<li>
+						<span class="<%= mcf >= 1 ? 'Energypercentup' : 'Energypercentdown'%>"><i class="icon_per"></i><%=parsecf((mcf >= 1 ? Math.floor((mcf-1)*100) : Math.floor((1-mcf)*100))+ '%')%></span></li>
+					<li>
+						<h2>去年同期</h2>
+						<span><em><%= tme_cf %></em>kWh</span>
+					</li>
+				</div>
+			</div>
+		</div>              
+	</div>
+</section>
+
+<div class="bottom-fxied">
+	<footer>
+		<ul>
+			<li><a href="/web/index?wxid=<%= wxid %>&xtid=<%= xtid %>"><span></span></a></li>
+			<li><a href="/web/index/user_profile?wxid=<%= wxid %>&xtid=<%= xtid %>">用户信息</a></li>
+			<li><a href="/web/index/building_manage?wxid=<%= wxid %>&xtid=<%= xtid %>">管理建筑</a></li>
+			<li>
+				<a href="/web/building/<%= building._id %>/warnings?wxid=<%= wxid %>&xtid=<%= xtid %>">异常提醒</a>
+				<% if(warnings){ %>
+				<em id="my_active_em" class="tip"></em>
+				<% } %>
+			</li>
+		</ul>
+	</footer>
+</div>
+<div id="fails_alert" style="display : none">
+    <div id="alert_content">
+        <span id="alert_message">无相关告警信息</span>
+    </div>
+</div>
+<script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
+

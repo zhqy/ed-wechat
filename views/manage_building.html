@@ -1,0 +1,80 @@
+	<section class="column">
+	<div class="user_custom">
+<!-- 	    <li>
+		    <a href="javascript:" class="user_custom_select js_addBtn">
+		    	<b class="on"></b>添加
+		    </a>
+	    </li> -->
+	    <li>
+		    <a href="javascript:" class="user_custom_select js_deleteBtn">
+		    	<b class="on"></b>删除
+		    </a>
+	    </li>
+	    <li>
+		    <a href="javascript:" class="deleteBtn">完成</a>
+	    </li>
+	</div>
+	
+	<div class="content" id="cur_list">
+		<ul>
+			<% ub.forEach(function(b){ %>
+				<li id="li_<%= b._id %>">
+				<div class="pack">
+					<div class="con">
+						<a class="cover" href="#" style="background-image:url(<%= b.PictureURL && b.PictureURL.length > 0 ? buildPicUrl(b.PictureURL[0].Path) : '/public/temp/pic01.jpg'%>);"></a>
+						<i class="cover_bg"></i>
+						<em class="cover_btn cover_delete_btn"></em>
+					</div>
+					<div class="tit">
+						<h3><a href="#"><%= b.Name %></a></h3>
+					</div>
+				</div>
+				</li>
+			<%})%>
+		</ul>
+	</div>
+
+	<div class="graphictext" style="clear:both;display:<%= (lb && lb.length > 0) ? '':'none' %>">
+		<h2 class="warn-items-title" style="font-size: 16px;margin-left: 10px;margin-top: 15px;">
+			点击下列添加更多建筑
+		</h2>
+	</div>
+	
+	<div class="content" id="add_list" style="clear:both">
+		<ul>
+			<% lb.forEach(function(b){ %>
+				<li id="li_<%= b._id %>">
+				<div class="pack">
+					<div class="con">
+						<a class="cover" href="#" style="background-image:url(<%= b.PictureURL ? b.PictureURL['0'] : '/public/temp/pic01.jpg'%>);"></a>
+						<i class="cover_bg"></i>
+						<em class="cover_btn cover_delete_btn"></em>
+					</div>
+					<div class="tit">
+						<h3><a href="#"><%= b.Name %></a></h3>
+					</div>
+				</div>
+				</li>
+			<%})%>
+		</ul>
+	</div>
+
+</section>
+
+<%-partial('footer')%>
+<div class="popbg"></div>
+<div class="popBox" value="">
+    <h2>你确定要删除此建筑吗？</h2>
+    <a class="confirm" href="javascript:">确定</a><a class="cancel" href="javascript:">取消</a>
+</div>
+<div id="success_alert" style="display : none">
+    <div id="alert_content">
+        <span id="alert_message">操作成功</span>
+    </div>
+</div>
+<div id="fails_alert" style="display : none">
+    <div id="alert_content">
+        <span id="alert_message">操作失败</span>
+    </div>
+</div>
+

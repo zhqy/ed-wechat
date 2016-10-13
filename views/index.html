@@ -1,0 +1,34 @@
+<section class="column">
+	<div class="content">
+		<% buildings.forEach(function(building){ %>
+			<div class="pack-con">
+				<div class="pack">
+					<div class="con">
+						<a class="cover" href="building/<%= building._id %>?wxid=<%= wxid %>&xtid=<%= xtid %>" style="background-image:url(<%= (building.PictureURL && building.PictureURL.length > 0) ? buildPicUrl(building.PictureURL[0].Path) : '/public/temp/pic01.jpg'%>);"></a>
+					</div>
+					<div class="tit">
+						<h3><a href="#"><%= building.Name %></a></h3>
+					</div>
+				</div>
+			</div>
+		<% }) %>
+	</div>
+</section>
+<div id="fails_alert" style="display : none">
+    <div id="alert_content">
+        <span id="alert_message">请添加建筑</span>
+    </div>
+</div>
+<%-partial('footer')%>
+<script>
+	var buildings_number = '<%= buildings.length %>';
+	$(function(){
+        //改变通知的形式
+		if (buildings_number == 0) {
+			$('#fails_alert').show();
+            setTimeout(function(){
+                $('#fails_alert').hide();
+            },2000);
+		}
+	});
+</script>

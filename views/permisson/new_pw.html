@@ -1,0 +1,95 @@
+<section class="m-component-login">
+    <p class="tip">请输入6位新密码</p>
+    <form name="card" method="post">
+     	<!-- 修改 by 2yuri -->
+        <!--
+    <script language="JScript" for="document" event="onkeydown"> if(event.keyCode==13)event.keyCode=9; </script> 
+    <script language="JScript"> var IPlikeInputStr=[]; for(var i=0;i<6;i++)IPlikeInputStr[i]="<input class=IPInput name=IPInput"
+     + i
+     + " type=number maxlength=1 onkeydown=if(event.srcElement.value.length==1||event.keyCode==39)event.keyCode=9 onkeyup='return T" 
+     + (i + 1) + "_onkeyup()'>"
+     +(i==5?"":""); document.write("<div class=IPDiv>"+IPlikeInputStr.join("")+"</div>"); </script>
+        -->
+    <div class="IPDiv">
+        <input class="mInput" name="mInput" type="password" maxlength="6">
+    </div>
+    <input type="text" id="wxid" name="wxid" value="<%= wxid %>" style="display:none"/>
+    <input type="text" id="xtid" name="xtid" value="<%= xtid %>" style="display:none"/>
+    <div class="col_div">
+        <input type="submit" id="btnlogin" class="btn" title="提交" value="提交" style="border:0;background:#25cbbd"/>
+    </div>
+    </form>
+</div>
+<%-partial('footer')%>
+<div id="fails_alert" style="display : none">
+    <div id="alert_content">
+        <span id="alert_message">密码格式不正确</span>
+    </div>
+</div>
+<script type="text/javascript">
+    //密码自动移动光标
+    function T1_onkeyup() {
+        if(document.card.IPInput0.value.length==1){
+            document.card.IPInput1.focus();
+            //
+            var ip = $(document.card.IPInput0);
+            ip.attr('type','password');
+        }
+    } 
+    function T2_onkeyup() {
+        if(document.card.IPInput1.value.length==1){
+            document.card.IPInput2.focus();
+            //
+            var ip = $(document.card.IPInput1);
+            ip.attr('type','password');
+        }
+    }
+    function T3_onkeyup() {
+        if(document.card.IPInput2.value.length==1){
+            document.card.IPInput3.focus();
+            //
+            var ip = $(document.card.IPInput2);
+            ip.attr('type','password');
+        }
+    }
+    function T4_onkeyup() {
+        if(document.card.IPInput3.value.length==1){
+            document.card.IPInput4.focus();
+            //
+            var ip = $(document.card.IPInput3);
+            ip.attr('type','password');
+        }
+    }
+    function T5_onkeyup() {
+        if(document.card.IPInput4.value.length==1){
+            document.card.IPInput5.focus();
+            //
+            var ip = $(document.card.IPInput4);
+            ip.attr('type','password');
+        }
+    }
+    //最后一个框
+    function T6_onkeyup() {
+        if(document.card.IPInput5.value.length==1){
+            //document.card.IPInput5.focus();
+            //
+            var ip = $(document.card.IPInput5);
+            ip.attr('type','password');
+        }
+    }
+    var error = <%=  ((typeof error) != 'undefined')? true : false %>
+    $(function(){
+        $('.mInput').on('input',function(){
+            if ($(this).val().length > 6) {
+                $(this).val($(this).val().slice(0,6));
+            };
+        })
+        if (error) {
+            $('#fails_alert').show();
+            setTimeout(function(){
+                $('#fails_alert').hide();
+            },2000);
+            return false;
+	   }
+    })
+</script>

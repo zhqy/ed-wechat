@@ -1,0 +1,88 @@
+<section class="electricityBox">
+	<div class="filter-bar-wrapper">
+		<ul class="filter-bar">
+			<li class="floors" data-type="floors">
+				<div><span>全部楼层</span></div>
+				<ul class="dropdown">
+					<% floors.forEach(function(floor){ %>
+						<li><a href="#" data-id="<%= floor %>"><%= floor + '层'%></a></li>
+					<% }) %>
+				</ul>
+			</li>
+			<li class="electRoom" data-type="electRoom">
+				<div><span>全部配电箱</span></div>
+				<ul class="dropdown">
+					<li data-id="-1"><a href="#">全部配电箱</a></li>
+					<li data-id="0"><a href="#">正常配电箱</a></li>
+					<li data-id="1"><a href="#">异常配电室</a></li>
+				</ul>
+			</li>
+    	</ul>
+		<div class="filter-mask"></div>
+	</div>
+	<div class="info">
+		<ul>
+			<% switchbox.forEach(function(sb){ %>
+			    <li data-state="<%= sb.state? 1:0 %>" data-id="<%= sb.Floor %>"><a href="/web/switchbox/<%= sb._id %>?wxid=<%= wxid %>&xtid=<%= xtid %>" data-id="<%= sb._id %>"><%= sb.Name %></a></li>
+			<% }) %>
+		</ul>
+	</div>
+</section>
+<%-partial('footer')%>
+<script>
+    $(function(){
+        //筛选操作
+        $(".filter-bar > li").on("click", function() {
+            if (!$(this).hasClass("active")) {
+                $(this).addClass("active").siblings("li").removeClass("active");
+                $(".filter-bar-wrapper").addClass("expanded")
+            } else {
+                $(".filter-bar > li").removeClass("active");
+                $(".filter-bar-wrapper").removeClass("expanded")
+            }
+        });
+        $(".filter-mask").on("click", function() {
+            $(".filter-bar > li").removeClass("active");
+            $(".filter-bar-wrapper").removeClass("expanded")
+        });
+        
+        //by 2yuri
+        //选中操作
+        $('.dropdown > li').click(function(){
+            var value = $(this).find('a').text();
+            $(this).addClass('active').siblings().removeClass('active');
+            $(this).parent().parent().find('span').text(value);
+            value = value.trim();
+            var type = $(this).parent().parent().attr('data-type');
+            
+            //显示与隐藏
+            if(type == 'floors'){
+                var floor = parseInt(value).toString();
+                $('.info li').each(function(i){
+                    var id = $(this).attr('data-id');
+                    if(id == floor){
+                        $(this).show();
+                    }else{
+                        $(this).hide();
+                    }
+                })
+            }
+            
+            if(type == 'electRoom'){
+                var key = $(this).find('a').parent().attr('data-id');
+                $('.info li').each(function(i){
+                    var state = $(this).attr('data-state');
+                    if(key != '-1'){
+                        if(state == key){
+                            $(this).show();
+                        }else{
+                            $(this).hide();
+                        }
+                    }else{
+                        $(this).show();
+                    }
+                })
+            }
+        })
+    })
+</script>

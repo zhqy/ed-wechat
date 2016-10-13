@@ -1,0 +1,40 @@
+<div class="tab">
+    <ul>
+        <li class="current" id="month">月</li>
+        <li id="week" for="demo_treelist_dummy">周</li>
+        <li id="day">日</li>
+    </ul>
+    <div class="tabBox">
+        <div class="tabipt"><input value="123" class="timeDate" id="appYear" type="text" readonly="readonly"></div>
+    </div>
+</div>
+<section class="tabWrap">
+    <ul class="lists" data-id="<%= buildingid %>">
+    </ul>
+</section>
+<ul id="week_treelist">
+    <% wtl.forEach(function(item){%>
+        <li>
+            <%= item.year %>
+            <ul>
+                <% item.weeks.forEach(function(w){%>
+                    <li><%= w %></li>
+                <%})%>
+            </ul>
+        </li>
+    <%})%>
+</ul>
+<ul id="month_treelist">
+    <% mtl.forEach(function(item){%>
+        <li>
+            <%= item.year %>
+            <ul>
+                <% item.months.forEach(function(m){%>
+                    <li><%= m %></li>
+                <%})%>
+            </ul>
+        </li>
+    <%})%>
+</ul>   
+
+<%-partial('footer')%>

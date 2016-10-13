@@ -1,0 +1,42 @@
+{
+  "name": "emcdata-wechat",
+  "version": "1.0.0",
+  "description": "emcdata wechat dev.",
+  "main": "app.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "null"
+  },
+  "keywords": [
+    "dev",
+    "wechat",
+    "emcdata"
+  ],
+  "author": "2yuri",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "~1.14.1",
+    "colors": "~1.1.2",
+    "cookie-parser": "~1.4.0",
+    "ejs-mate": "~2.3.0",
+    "eventproxy": "^0.3.4",
+    "express": "~4.13.3",
+    "lodash": "^3.10.1",
+    "method-override": "~2.3.5",
+    "moment": "^2.10.6",
+    "mongoose": "^4.1.12",
+    "mongoose-deep-populate": "^2.0.3",
+    "querystring": "~0.2.0",
+    "ready": "~0.1.1",
+    "redis": "^2.2.5",
+    "response-time": "~2.3.1",
+    "wechat": "~2.0.2",
+    "wechat-api": "~1.19.0",
+    "wechat-oauth": "~1.1.0",
+    "batch": "~0.5.3",
+    "socket.io-client": "~1.4.5"
+  }
+}

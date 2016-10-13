@@ -1,0 +1,46 @@
+<div class="tab">
+    <ul>
+        <li class="current" id="year">年</li>
+        <li id="month">月</li>
+        <li id="week">周</li>
+    </ul>
+    <div class="tabBox">
+        <div class="tabipt"><input value="" class="timeDate" id="appYear" type="text" readonly="readonly"></div>
+    </div>
+</div>
+<section class="proWrap">
+<div id="chart_spline" data-id="<%= buildingid %>"><div id="highcharts"></div></div>
+</section>
+<ul id="week_treelist">
+    <% wtl.forEach(function(item){%>
+        <li>
+            <%= item.year %>
+            <ul>
+                <% item.weeks.forEach(function(w){%>
+                    <li><%= w %></li>
+                <%})%>
+            </ul>
+        </li>
+    <%})%>
+</ul>
+<ul id="month_treelist">
+    <% mtl.forEach(function(item){%>
+        <li>
+            <%= item.year %>
+            <ul>
+                <% item.months.forEach(function(m){%>
+                    <li><%= m %></li>
+                <%})%>
+            </ul>
+        </li>
+    <%})%>
+</ul>
+<ul id="year_treelist">
+    <% mtl.forEach(function(item){%>
+        <li>
+            <%= item.year %>
+        </li>
+    <%})%>
+</ul>
+
+<%-partial('footer')%>
