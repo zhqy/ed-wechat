@@ -6,7 +6,7 @@ var dev = {
 	wechat_welcome_message:'欢迎词',
 	wechat_default_message:'更多功能，请点击菜单，进入系统首页',
 
-	wechat_build_menu:true,
+	wechat_build_menu:false,
 
 	cookie_secret:'emc-data',
 	host:'http://54.222.222.111', //aws开发环境，ssh隧道至本地
