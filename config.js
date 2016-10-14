@@ -9,10 +9,10 @@ var dev = {
 	wechat_build_menu:true,
 
 	cookie_secret:'emc-data',
-	host:'http://103.30.148.71', //aws开发环境，ssh隧道至本地
+	host:'http://54.222.222.111', //aws开发环境，ssh隧道至本地
 	port:8090,
 
-	db:'mongodb://103.30.148.71/pw_sys',
+	db:'mongodb://54.222.222.111/pw_sys_test',
 
   alarmwebsocket: {
   	port: 5001,

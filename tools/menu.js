@@ -36,8 +36,8 @@ var menu = exports.build = function(){
 	});
 
   // 菜单
-  // var redirectUrl = config.host + ':8090' + '/web/login';
-  var redirectUrl = 'http://pixelcat.cc';
+  var redirectUrl = config.host + ':8090' + '/web/login';
+  // var redirectUrl = 'http://pixelcat.cc';
 
 	var menu = {
 			"button":[
@@ -51,14 +51,15 @@ var menu = exports.build = function(){
 
  // 创建
  api.createMenu(menu,function(err,result){
- 	if (err || result.errcode === 0) {
-         console.log(result);
- 		return logger.info('Creating wechat menu error: ',err);
- 	}else{
-    console.log('菜单创建成功');
- 		exports.ready(true);
- 	}
+   if(err){
+     console.log('创建微信菜单失败：'+ err.message);
+     return;
+   }
+   // errcode == 0?
+   console.log('创建菜单成功');
+   exports.ready(true);
  });
+
 };
 
 menu();

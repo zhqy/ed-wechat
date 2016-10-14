@@ -18,7 +18,7 @@ exports.getlogin = function(req,res,next){
 	var ep = new eventproxy();
 	var code = req.query.code;
 	var wxid = req.query.wxid;
-    
+
 	if (code) {
 		oauthClient.getAccessToken(code,function(err,result){
 			if (err) {
@@ -46,6 +46,7 @@ console.log(err);
                     }
 				}else{
 					// 状态码 301
+					console.log('用户已经绑定账号，WXID: ' + openid + ', XTID: ' + user.SystemUserId);
 					res.redirect(301,'index?wxid=' + openid + '&xtid=' + user.SystemUserId);
 				}
 			});
@@ -66,14 +67,14 @@ exports.postlogin = function(req,res,next){
 	var render = function(msg){
 		return res.render('permisson/login',{title : '登陆',openid : openid,error : msg});
 	};
-    
+
 	ep.on('login_error',function(){
 		return render("用户名或者密码错误");
 	});
 	if (!openid || !username || !password) {
 		return render('信息不完整');
 	}
-    
+
 	o_user.o_system.getUserByUserName(username,function(err,user){
 		if (err) { return next(err); }
 		if (user) {
@@ -86,7 +87,7 @@ exports.postlogin = function(req,res,next){
 				if (err) { return next(err); };
 				return res.redirect(301,'index?wxid=' + openid + '&xtid=' + user._id);
 			});
-		}else{ 
+		}else{
 			ep.emit('login_error');
 		}
 	});
@@ -169,19 +170,19 @@ exports.postcontrolpasswordlogin = function(req,res,next){
 exports.getnewpw = function(req,res,next){
     var wxid = req.query.wxid;
     var xtid = req.query.xtid;
-    
+
     res.render('permisson/new_pw',{title :'更改密码', wxid : wxid, xtid : xtid});
 }
 exports.postnewpw = function(req,res,next){
     var wxid = req.query.wxid;
     var xtid = req.query.xtid;
-    
+
     var j = 0,password = [];
 	while(j < 6){ password.push(req.body["IPInput" + j]); j++;}
 	password = password.join('').trim();
-    
+
     if(password.length != 6){
-        return res.render('permisson/new_pw',{title :'更改密码', wxid : wxid, xtid : xtid, error : true});        
+        return res.render('permisson/new_pw',{title :'更改密码', wxid : wxid, xtid : xtid, error : true});
     }
     return res.redirect(301,'/web/pw_confirm?wxid=' + wxid + '&xtid=' + xtid + '&pw=' + password);
 }
@@ -191,18 +192,18 @@ exports.getpwconfirm = function(req,res,next){
     var wxid = req.query.wxid;
     var xtid = req.query.xtid;
     var pw = req.query.pw;
-    
+
     res.render('permisson/pw_confirm',{title :'确认密码', wxid : wxid, xtid : xtid, pw : pw});
 }
 exports.postpwconfirm = function(req,res,next){
     var wxid = req.query.wxid;
     var xtid = req.query.xtid;
     var pw = req.query.pw;
-    
+
     var j = 0,password = [];
 	while(j < 6){ password.push(req.body["IPInput" + j]); j++;}
 	password = password.join('').trim();
-    
+
     if(password.length != 6){
         return res.render('permisson/pw_confirm',{title :'确认密码', wxid : wxid, xtid : xtid, pw : pw, checkError : true});
     }
